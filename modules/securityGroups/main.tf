@@ -100,7 +100,7 @@ resource "aws_security_group" "cart_sg" {
 resource "aws_security_group" "catalogue_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
+    security_groups = [aws_security_group.internal_alb.id, aws_security_group.cart_sg.id]
     from_port        = 8002
     to_port          = 8002
     protocol         = "tcp"
@@ -148,7 +148,7 @@ resource "aws_security_group" "user_sg" {
 resource "aws_security_group" "shipping_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
+    security_groups = [aws_security_group.internal_alb.id, aws_security_group.orders_sg.id]
     from_port        = 8004
     to_port          = 8004
     protocol         = "tcp"
@@ -246,9 +246,9 @@ resource "aws_security_group" "orders_sg" {
 resource "aws_security_group" "mysql_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
-    from_port        = 8007
-    to_port          = 8007
+    security_groups = [aws_security_group.catalogue_sg.id]
+    from_port        = 3306
+    to_port          = 3306
     protocol         = "tcp"
 
   }
@@ -271,10 +271,10 @@ resource "aws_security_group" "mysql_sg" {
 resource "aws_security_group" "rabbitmq_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
-    from_port        = 8007
-    to_port          = 8007
-    protocol         = "tcp"
+    security_groups = [aws_security_group.orders_sg.id,aws_security_group.payment_sg.id]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
 
   }
 
@@ -295,9 +295,9 @@ resource "aws_security_group" "rabbitmq_sg" {
 resource "aws_security_group" "mongo_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
-    from_port        = 8007
-    to_port          = 8007
+    security_groups = [aws_security_group.orders_sg.id]
+    from_port        = 27017
+    to_port          = 27017
     protocol         = "tcp"
 
   }
@@ -319,10 +319,10 @@ resource "aws_security_group" "mongo_sg" {
 resource "aws_security_group" "valkey_sg" {
   vpc_id = var.vpc_id
   ingress {
-    security_groups = [aws_security_group.internal_alb.id]
-    from_port        = 8007
-    to_port          = 8007
-    protocol         = "tcp"
+    security_groups = [aws_security_group.cart_sg.id]
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
 
   }
 
