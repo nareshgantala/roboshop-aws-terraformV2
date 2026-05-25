@@ -17,9 +17,8 @@ module "alb" {
   vpc_id = var.vpc_id
 }
 
-
-resource "aws_launch_template" "main" {
-  for_each = var.component
+resource "aws_launch_template" "app_main" {
+  for_each = var.app
   name = "roboshop-template"
 
   block_device_mappings {
@@ -65,7 +64,9 @@ resource "aws_launch_template" "main" {
 }
 
 
-resource "aws_autoscaling_group" "bar" {
+resource "aws_autoscaling_group" "app_asg" {
+  for_each = var.app
+  target_group_arns = [module.alb.public_tg_arn]
   availability_zones = [data.aws_availability_zones.available]
   desired_capacity   = 1
   max_size           = 2
@@ -76,3 +77,4 @@ resource "aws_autoscaling_group" "bar" {
     version = "$Latest"
   }
 }
+

@@ -2,27 +2,13 @@ variable "vpc_id" {
   default = "vpc-003e2f478e6a9ca59"
 }
 
-variable "component" {
+variable "app" {
       default = {
         frontend = {
           instance_type = "t2.micro"
           port = 80
         }
-        mysql = {
-          instance_type = "t3.medium"
-          port = 3036
-        }
-        mongodb = {
-          instance_type = "t2.micro"
-          port = 27017
-        }
-        valkey = {
-          instance_type = "t2.micro"
 
-        }
-        rabbitmq = {
-          instance_type = "t2.micro"
-        }
         cart = {
           instance_type = "t2.micro"
           port = 8003
@@ -54,3 +40,22 @@ variable "component" {
     }
 }
 
+variable "db" {
+  default = {
+        mysql = {
+          instance_type = "t3.medium"
+          port = 3036
+        }
+        mongodb = {
+          instance_type = "t2.micro"
+          port = 27017
+        }
+        valkey = {
+          instance_type = "t2.micro"
+
+        }
+        rabbitmq = {
+          instance_type = "t2.micro"
+        }
+  }
+}
