@@ -13,3 +13,5 @@ variable "public_alb_sg" {
 variable "internal_alb_sg" {
   
 }
+
+variable "vpc_id" {}
