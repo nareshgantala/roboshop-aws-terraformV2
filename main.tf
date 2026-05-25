@@ -18,7 +18,7 @@ module "alb" {
 }
 
 
-resource "aws_launch_template" "example" {
+resource "aws_launch_template" "main" {
   for_each = var.component
   name = "roboshop-template"
 
@@ -62,4 +62,17 @@ resource "aws_launch_template" "example" {
               ansible-playbook -i localhost, ${each.key}.yml
               EOF
   )
+}
+
+
+resource "aws_autoscaling_group" "bar" {
+  availability_zones = [data.aws_availability_zones.available]
+  desired_capacity   = 1
+  max_size           = 2
+  min_size           = 1
+
+  launch_template {
+    id      = aws_launch_template.main.id
+    version = "$Latest"
+  }
 }
