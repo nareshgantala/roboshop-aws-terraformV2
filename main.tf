@@ -19,6 +19,7 @@ module "alb" {
 
 
 resource "aws_launch_template" "example" {
+  for_each = var.component
   name = "roboshop-template"
 
   block_device_mappings {
@@ -31,25 +32,34 @@ resource "aws_launch_template" "example" {
 
   image_id = "ami-0fdfb4d987b63ae72"
 
-  instance_type = "t3.medium"
-
+  instance_type = each.value
 
   key_name = "roboshop_pem"
 
-  vpc_security_group_ids = ["sg-12345678"]
+  vpc_security_group_ids = [
+    each.key == "cart"      ? module.sg.cart_sg :
+    each.key == "catalogue" ? module.sg.catalouge_sg : # Watch out for the typo 'catalouge' in your output!
+    each.key == "user"      ? module.sg.user_sg :
+    each.key == "orders"    ? module.sg.orders_sg :
+    each.key == "shipping"  ? module.sg.shipping_sg :
+    each.key == "payment"   ? module.sg.payment_sg :
+    module.sg.internal_alb_sg # Fallback default
+  ]
 
   tag_specifications {
     resource_type = "instance"
 
     tags = {
-      Name = "test"
+      Name = "roboshop-${each.key}-template"
     }
   }
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
-              "sudo dnf install ansible-core -y",
-              "ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-aws-ansible.git ${each.key}.yml "
+              sudo dnf install ansible-core -y
+              git clone https://github.com/nareshgantala/roboshop-aws-ansible.git /tmp/roboshop-ansible
+              cd /tmp/roboshop-ansible
+              ansible-playbook -i localhost, ${each.key}.yml
               EOF
   )
 }
