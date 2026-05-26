@@ -3,5 +3,5 @@ resource "aws_route53_record" "main" {
   name    = var.component
   type    = "A"
   ttl     = 300
-  records = var.record
+  records = [var.record]
 }
