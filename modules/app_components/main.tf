@@ -18,7 +18,7 @@ resource "aws_lb_listener" "main" {
 
 resource "aws_launch_template" "app_main" {
 
-  name = "roboshop-template"
+  name = "roboshop-${var.component}-template"
 
   block_device_mappings {
     device_name = "/dev/sdf"
