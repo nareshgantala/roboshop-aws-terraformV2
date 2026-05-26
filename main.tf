@@ -36,5 +36,21 @@ module "app_components" {
   security_groups = [module.sg.security_group_ids["${each.key}_sg"]]
   private_subnets  = module.networking.private_subnets
   vpc_id = var.vpc_id
+  load_balancer_arn = aws_lb.internal_alb.arn
 }
+
+resource "aws_lb" "internal_alb" {
+  name               = "roboshop-internal-alb"
+  internal           = true
+  load_balancer_type = "application"
+  security_groups    = [module.sg.internal_alb_sg]
+  subnets            = module.networking.private_subnets
+
+  enable_deletion_protection = true
+
+  tags = {
+    Name = "roboshop-internal-alb"
+  }
+}
+
 

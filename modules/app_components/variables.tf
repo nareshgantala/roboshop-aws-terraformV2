@@ -11,3 +11,7 @@ variable "security_groups" {
 variable "component" {
   
 }
+
+variable "load_balancer_arn" {
+  
+}

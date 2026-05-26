@@ -1,16 +1,3 @@
-resource "aws_lb" "internal_alb" {
-  name               = "roboshop-internal-alb"
-  internal           = true
-  load_balancer_type = "application"
-  security_groups    = var.security_groups
-  subnets            = var.private_subnets
-
-  enable_deletion_protection = true
-
-  tags = {
-    Name = "roboshop-internal-alb"
-  }
-}
 
 
 resource "aws_lb_target_group" "main"{
@@ -21,7 +8,7 @@ resource "aws_lb_target_group" "main"{
 }
 
 resource "aws_lb_listener" "main" {
-  load_balancer_arn = aws_lb.public_alb.arn
+  load_balancer_arn = var.load_balancer_arn
   port              = "80"
   protocol          = "HTTP"
  
