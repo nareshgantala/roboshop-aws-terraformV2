@@ -42,6 +42,14 @@ module "app_components" {
   vpc_security_group_ids = [module.sg.security_group_ids["${each.key}_sg"]]
 }
 
+module "dns_app" {
+  for_each = var.app
+  source = "./modules/dns"
+  component = each.key
+  record = aws_lb.internal_alb.dns_name
+  alb_zone_id = aws_lb.internal_alb.zone_id
+}
+
 resource "aws_lb" "internal_alb" {
   name               = "roboshop-internal-alb"
   internal           = true
