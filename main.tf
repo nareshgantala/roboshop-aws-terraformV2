@@ -64,7 +64,60 @@ resource "aws_launch_template" "app_main" {
 }
 
 
-resource "aws_autoscaling_group" "app_asg" {
+resource "aws_launch_template" "frontend" {
+  for_each = var.ui
+  name = "roboshop-template"
+
+  block_device_mappings {
+    device_name = "/dev/sdf"
+
+    ebs {
+      volume_size = 20
+    }
+  }
+
+  image_id = "ami-0fdfb4d987b63ae72"
+
+  instance_type = each.value
+
+  key_name = "roboshop_pem"
+
+  vpc_security_group_ids = [module.sg.frontend_sg]
+
+  tag_specifications {
+    resource_type = "instance"
+
+    tags = {
+      Name = "roboshop-${each.key}-template"
+    }
+  }
+
+  user_data = base64encode(<<-EOF
+              #!/bin/bash
+              sudo dnf install ansible-core -y
+              git clone https://github.com/nareshgantala/roboshop-aws-ansible.git /tmp/roboshop-ansible
+              cd /tmp/roboshop-ansible
+              ansible-playbook -i localhost, ${each.key}.yml
+              EOF
+  )
+}
+
+
+resource "aws_autoscaling_group" "frontend" {
+  for_each = var.app
+  target_group_arns = [module.alb.public_tg_arn]
+  availability_zones = [data.aws_availability_zones.available]
+  desired_capacity   = 1
+  max_size           = 2
+  min_size           = 1
+
+  launch_template {
+    id      = aws_launch_template.main.id
+    version = "$Latest"
+  }
+}
+
+resource "aws_autoscaling_group" "frontend" {
   for_each = var.app
   target_group_arns = [module.alb.public_tg_arn]
   availability_zones = [data.aws_availability_zones.available]

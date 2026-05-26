@@ -1,6 +1,14 @@
 variable "vpc_id" {
   default = "vpc-003e2f478e6a9ca59"
 }
+variable "ui" {
+  default = {
+        frontend = {
+          instance_type = "t2.micro"
+          port = 80
+        }
+}
+}
 
 variable "app" {
       default = {

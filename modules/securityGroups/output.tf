@@ -6,6 +6,10 @@ output "internal_alb_sg" {
   value = aws_security_group.internal_alb.id
 }
 
+output "frontend_sg" {
+  value = aws_security_group.frontend_sg.id
+}
+
 output "cart_sg" {
   value = aws_security_group.cart_sg.id
 }
