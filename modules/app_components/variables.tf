@@ -22,3 +22,7 @@ variable "vpc_security_group_ids" {
 variable "public_subnets" {
   
 }
+
+variable "instance_type" {
+  
+}

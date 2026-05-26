@@ -30,7 +30,7 @@ resource "aws_launch_template" "app_main" {
 
   image_id = "ami-0fdfb4d987b63ae72"
 
-  instance_type = each.value
+  instance_type = var.instance_type
 
   key_name = "roboshop_pem"
 
@@ -40,7 +40,7 @@ resource "aws_launch_template" "app_main" {
     resource_type = "instance"
 
     tags = {
-      Name = "roboshop-${each.key}-template"
+      Name = "roboshop-${var.component}-template"
     }
   }
 
@@ -49,7 +49,7 @@ resource "aws_launch_template" "app_main" {
               sudo dnf install ansible-core -y
               git clone https://github.com/nareshgantala/roboshop-aws-ansible.git /tmp/roboshop-ansible
               cd /tmp/roboshop-ansible
-              ansible-playbook -i localhost, ${each.key}.yml
+              ansible-playbook -i localhost, ${var.component}.yml
               EOF
   )
 }
