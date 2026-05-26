@@ -29,5 +29,12 @@ module "dns_ui" {
   alb_zone_id = module.alb[each.key].alb_zone_id
 }
 
-
+module "app_components" {
+  for_each = var.app
+  source = "./modules/app_components"
+  component = each.key
+  security_groups = [module.sg.security_group_ids["${each.key}_sg"]]
+  private_subnets  = module.networking.private_subnets
+  vpc_id = var.vpc_id
+}
 
