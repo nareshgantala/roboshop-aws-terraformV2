@@ -15,3 +15,11 @@ variable "internal_alb_sg" {
 }
 
 variable "vpc_id" {}
+
+variable "component" {
+  
+}
+
+variable "instance_type" {
+  
+}
