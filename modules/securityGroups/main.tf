@@ -19,43 +19,46 @@ resource "aws_security_group" "public_alb" {
   }
 }
 
+# 1. Clear out the inline ingress from the parent resource definition
 resource "aws_security_group" "frontend_sg" {
   vpc_id = var.vpc_id
-  
-  ingress {
-    security_groups = [aws_security_group.public_alb.id]
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-  }
-
-  # REMOVED: Egress rule pointing directly to internal_alb moved below to break the loop
 
   tags = {
     Name = "roboshop-frontend-sg"
   }
 }
 
+# 2. Add the Public ALB inbound traffic as its own standalone rule resource
+resource "aws_security_group_rule" "frontend_ingress_from_public_alb" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = aws_security_group.frontend_sg.id
+  source_security_group_id = aws_security_group.public_alb.id
+}
+
+# 3. Your Debugging SSH rule (Kept exactly as you wrote it)
 resource "aws_security_group_rule" "frontend_ssh" {
   type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"] # For debugging; change to your IP for production security
+  cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.frontend_sg.id
 }
 
-# Add this right next to your frontend security group resources
+# 4. Your Outbound Internet rule (Kept exactly as you wrote it)
 resource "aws_security_group_rule" "frontend_to_internet_egress" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
-  protocol          = "-1"          # Allows all protocols
-  cidr_blocks       = ["0.0.0.0/0"] # Allows outbound traffic to the public internet
+  protocol          = "-1" 
+  cidr_blocks       = ["0.0.0.0/0"] 
   security_group_id = aws_security_group.frontend_sg.id
 }
 
-# --- BRIDGE RULE: Frontend out to Internal ALB ---
+# 5. Your Internal ALB Bridge rule (Kept exactly as you wrote it)
 resource "aws_security_group_rule" "frontend_egress_to_internal_alb" {
   type                     = "egress"
   from_port                = 0
