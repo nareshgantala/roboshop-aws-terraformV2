@@ -39,7 +39,7 @@ resource "aws_route_table" "main_gw" {
 
 resource "aws_route_table_association" "main" {
   count = 2
-  subnet_id      = aws_subnet.Public_subnet[count.index+1].id
+  subnet_id      = aws_subnet.public_subnet[count.index+1].id
   route_table_id = aws_route_table.main_gw.id
 }
 
@@ -53,7 +53,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.Public_subnet[0].id
+  subnet_id     = aws_subnet.public_subnet[0].id
 
   tags = {
     Name = "gw NAT"
