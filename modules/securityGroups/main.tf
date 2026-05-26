@@ -36,6 +36,15 @@ resource "aws_security_group" "frontend_sg" {
   }
 }
 
+resource "aws_security_group_rule" "frontend_ssh" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"] # For debugging; change to your IP for production security
+  security_group_id = aws_security_group.frontend_sg.id
+}
+
 # --- BRIDGE RULE: Frontend out to Internal ALB ---
 resource "aws_security_group_rule" "frontend_egress_to_internal_alb" {
   type                     = "egress"
@@ -45,6 +54,8 @@ resource "aws_security_group_rule" "frontend_egress_to_internal_alb" {
   security_group_id        = aws_security_group.frontend_sg.id
   source_security_group_id = aws_security_group.internal_alb.id
 }
+
+
 
 resource "aws_security_group" "internal_alb" {
   vpc_id = var.vpc_id
