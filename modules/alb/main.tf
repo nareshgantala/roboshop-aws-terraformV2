@@ -5,7 +5,7 @@ resource "aws_lb" "public_alb" {
   security_groups    = [var.public_alb_sg]
   subnets            = var.public_subnets
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     Name = "roboshop-public-alb"
