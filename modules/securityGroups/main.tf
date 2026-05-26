@@ -45,6 +45,16 @@ resource "aws_security_group_rule" "frontend_ssh" {
   security_group_id = aws_security_group.frontend_sg.id
 }
 
+# Add this right next to your frontend security group resources
+resource "aws_security_group_rule" "frontend_to_internet_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"          # Allows all protocols
+  cidr_blocks       = ["0.0.0.0/0"] # Allows outbound traffic to the public internet
+  security_group_id = aws_security_group.frontend_sg.id
+}
+
 # --- BRIDGE RULE: Frontend out to Internal ALB ---
 resource "aws_security_group_rule" "frontend_egress_to_internal_alb" {
   type                     = "egress"
