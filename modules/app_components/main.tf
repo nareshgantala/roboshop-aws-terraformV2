@@ -56,7 +56,7 @@ resource "aws_launch_template" "app_main" {
 
 resource "aws_autoscaling_group" "app_main" {
   target_group_arns = [aws_lb_target_group.main.arn]
-  vpc_zone_identifier = var.public_subnets
+  vpc_zone_identifier = var.private_subnets
   desired_capacity   = 1
   max_size           = 2
   min_size           = 1
