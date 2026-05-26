@@ -35,6 +35,7 @@ module "app_components" {
   component = each.key
   security_groups = [module.sg.security_group_ids["${each.key}_sg"]]
   private_subnets  = module.networking.private_subnets
+  public_subnets = module.networking.public_subnets
   vpc_id = var.vpc_id
   load_balancer_arn = aws_lb.internal_alb.arn
   vpc_security_group_ids = [module.sg.security_group_ids["${each.key}_sg"]]

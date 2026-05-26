@@ -19,3 +19,6 @@ variable "load_balancer_arn" {
 variable "vpc_security_group_ids" {
   type = list(string)
 }
+variable "public_subnets" {
+  
+}
