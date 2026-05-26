@@ -25,7 +25,7 @@ module "dns_ui" {
   for_each = var.ui
   source = "./modules/dns"
   component = each.key
-  record = module.alb.public_alb_dns
+  record = module.alb[each.key].public_alb_dns
 }
 
 
