@@ -32,7 +32,7 @@ resource "aws_lb_listener" "public_alb_listener" {
 
 resource "aws_autoscaling_group" "frontend" {
   target_group_arns = [aws_lb_target_group.public_tg.arn]
-  availability_zones = [data.aws_availability_zones[0].available,data.aws_availability_zones[1].available ]
+  availability_zones = [data.aws_availability_zones.available.names[0],data.aws_availability_zones.available.names[1] ]
   desired_capacity   = 1
   max_size           = 2
   min_size           = 1
