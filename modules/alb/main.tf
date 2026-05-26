@@ -17,6 +17,17 @@ resource "aws_lb_target_group" "public_tg"{
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
+  health_check {
+    enabled             = true
+    path                = "/"                # Change this if your app has a specific path (e.g., /health)
+    port                = "80"               # The port your application server listens on
+    protocol            = "HTTP"
+    interval            = 30                 # Seconds between health checks
+    timeout             = 5                  # Seconds to wait for a response
+    healthy_threshold   = 2                  # Number of consecutive successes to be deemed healthy
+    unhealthy_threshold = 2                  # Number of consecutive failures to be deemed unhealthy
+    matcher             = "200-399"          # Acceptable HTTP response status codes
+  }
 }
 
 resource "aws_lb_listener" "public_alb_listener" {
