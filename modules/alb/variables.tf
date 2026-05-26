@@ -23,3 +23,6 @@ variable "component" {
 variable "instance_type" {
   
 }
+
+variable "frontend_sg" {
+}

@@ -18,6 +18,7 @@ module "alb" {
   vpc_id = var.vpc_id
   component = each.key
   instance_type = each.value["instance_type"]
+  frontend_sg = module.sg.frontend_sg
 }
 
 module "dns_ui" {

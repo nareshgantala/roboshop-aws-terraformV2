@@ -38,7 +38,7 @@ resource "aws_autoscaling_group" "frontend" {
   min_size           = 1
 
   launch_template {
-    id      = aws_launch_template.main.id
+    id      = aws_launch_template.frontend.id
     version = "$Latest"
   }
 }
@@ -61,7 +61,8 @@ resource "aws_launch_template" "frontend" {
 
   key_name = "roboshop_pem"
 
-  vpc_security_group_ids = [module.sg.frontend_sg]
+  vpc_security_group_ids = [var.frontend_sg]
+  
 
   tag_specifications {
     resource_type = "instance"
