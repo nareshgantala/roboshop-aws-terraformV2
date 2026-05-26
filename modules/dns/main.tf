@@ -3,5 +3,9 @@ resource "aws_route53_record" "main" {
   name    = var.component
   type    = "A"
   ttl     = 300
-  records = [var.record]
+    alias {
+    name                   = var.record
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
 }

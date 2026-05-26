@@ -5,3 +5,7 @@ output "public_tg_arn" {
 output "public_alb_dns" {
   value = aws_lb.public_alb.dns_name
 }
+
+output "alb_zone_id" {
+  value = aws_lb.public_alb.zone_id
+}

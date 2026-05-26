@@ -26,6 +26,7 @@ module "dns_ui" {
   source = "./modules/dns"
   component = each.key
   record = module.alb[each.key].public_alb_dns
+  alb_zone_id = module.alb[each.key].alb_zone_id
 }
 
 
