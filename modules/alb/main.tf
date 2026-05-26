@@ -85,6 +85,13 @@ resource "aws_launch_template" "frontend" {
 
   user_data = base64encode(<<-EOF
               #!/bin/bash
+              # 1. Change the config for future reboots
+              sed -i -e '/SELINUX=/ c SELINUX=disabled' /etc/selinux/config
+              
+              # 2. Disable SELinux immediately in memory for the current session
+              setenforce 0 || true
+
+              # 3. Proceed with your provisioning safely
               sudo dnf install ansible-core -y
               git clone https://github.com/nareshgantala/roboshop-aws-ansible.git /tmp/roboshop-ansible
               cd /tmp/roboshop-ansible
