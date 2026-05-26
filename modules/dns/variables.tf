@@ -1,0 +1,7 @@
+variable "component" {
+  
+}
+
+variable "record" {
+  
+}

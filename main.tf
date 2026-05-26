@@ -20,6 +20,12 @@ module "alb" {
   instance_type = each.value["instance_type"]
 }
 
+module "dns_ui" {
+  for_each = var.ui
+  source = "./modules/dns"
+  component = each.key
+  record = module.alb.public_alb_dns
+}
 
 
 
