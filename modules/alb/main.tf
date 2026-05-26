@@ -8,7 +8,7 @@ resource "aws_lb" "public_alb" {
   enable_deletion_protection = true
 
   tags = {
-    Name = roboshop-public-alb
+    Name = "roboshop-public-alb"
   }
 }
 
