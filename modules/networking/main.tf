@@ -80,7 +80,7 @@ resource "aws_route_table" "main_nat" {
 
 resource "aws_route_table_association" "main_nat" {
   count = 2
-  subnet_id      = aws_subnet.Private_subnet[count.index+1].id
+  subnet_id      = aws_subnet.private_subnet[count.index+1].id
   route_table_id = aws_route_table.main_nat.id
 }
 
