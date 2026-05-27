@@ -5,5 +5,4 @@ variable "subnet_id" {
 }
 
 variable "sg" {
-  type = list(string)
 }
