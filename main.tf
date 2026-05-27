@@ -71,7 +71,7 @@ resource "aws_lb_listener" "Internal_listener" {
  
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
+    target_group_arn = module.app_components.target_group_arn
   }
 }
 
