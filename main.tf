@@ -30,6 +30,7 @@ module "dns_ui" {
 }
 
 module "app_components" {
+  depends_on = [ module.db_ec2, null_resource.db ]
   for_each = var.app
   source = "./modules/app_components"
   component = each.key
