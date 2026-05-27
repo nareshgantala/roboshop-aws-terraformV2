@@ -1,6 +1,6 @@
 resource "aws_route53_record" "mail" {
   zone_id = var.zone_id # Your hosted zone ID
-  name    = "${var.component}-dev.roboshop.internal"
+  name    = "${var.component}"
   type    = "A"
 
   # If alb_zone_id is passed, create an ALIAS record (for Apps)
