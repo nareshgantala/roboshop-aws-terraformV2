@@ -50,6 +50,36 @@ module "dns_app" {
   alb_zone_id = aws_lb.internal_alb.zone_id
 }
 
+module "db_ec2" {
+  for_each = var.db
+  source = "./modules/ec2"
+  instance_type = each.value["instance_type"]
+  component = each.key
+}
+
+module "db_dns" {
+  for_each = var.db
+  source = "./modules/dns"
+  
+}
+
+
+resource "null_resource" "db" {
+  for_each = var.db
+  provisioner "remote-exec" {
+      connection {
+    type = "ssh"
+    user = "ec2-user"
+    private_key = file("/home/ec2-user/roboshop_pem.pem")
+    host = module.db_ec2[each.key].private_ip
+  }
+    inline = [ 
+      "sudo dnf install ansible-core -y",
+      "sudo ansible-pull -i localhost, -U https://github.com/nareshgantala/roboshop-aws-ansible.git ${each.key}.yml"
+     ]
+  }
+}
+
 resource "aws_lb" "internal_alb" {
   name               = "roboshop-internal-alb"
   internal           = true
