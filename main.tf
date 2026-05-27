@@ -55,7 +55,7 @@ module "db_ec2" {
   source = "./modules/ec2"
   instance_type = each.value["instance_type"]
   component = each.key
-  subnet_id = module.networking.private_subnets
+  subnet_id = module.networking.private_subnets[0]
   sg = module.sg.security_group_ids["database_sg"]
 }
 
