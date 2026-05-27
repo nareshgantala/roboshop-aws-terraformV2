@@ -82,7 +82,7 @@ default_action {
 
 resource "aws_lb_listener_rule" "app_routing" {
   for_each     = var.app
-  listener_arn = aws_lb.internal_listener.arn
+  listener_arn = aws_lb_listener.Internal_listener.arn
   priority     = 100 + index(keys(var.app), each.key) # Generates unique priorities like 101, 102...
 
   action {
