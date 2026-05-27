@@ -57,7 +57,7 @@ resource "aws_lb" "internal_alb" {
   security_groups    = [module.sg.internal_alb_sg]
   subnets            = module.networking.private_subnets
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     Name = "roboshop-internal-alb"
