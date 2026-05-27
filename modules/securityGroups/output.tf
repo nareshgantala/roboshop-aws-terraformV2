@@ -66,6 +66,7 @@ output "security_group_ids" {
     mysql_sg      = aws_security_group.mysql_sg.id
     rabbitmq_sg   = aws_security_group.rabbitmq_sg.id
     valkey_sg     = aws_security_group.valkey_sg.id
+    database_sg   = aws_security_group.database_sg.id
   }
 }
 
