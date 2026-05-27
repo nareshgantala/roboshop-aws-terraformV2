@@ -69,10 +69,31 @@ resource "aws_lb_listener" "Internal_listener" {
   port              = "80"
   protocol          = "HTTP"
  
-  default_action {
-    type             = "forward"
-    target_group_arn = module.app_components.target_group_arn
+default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Empty Environment / Path Not Found"
+      status_code  = "404"
+    }
   }
 }
 
+resource "aws_lb_listener_rule" "app_routing" {
+  for_each     = var.app
+  listener_arn = aws_lb.internal_listener.arn
+  priority     = 100 + index(keys(var.app), each.key) # Generates unique priorities like 101, 102...
+
+  action {
+    type             = "forward"
+    target_group_arn = module.app_components[each.key].target_group_arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/${each.key}/*"] # Routes /cart/* to cart, /user/* to user, etc.
+    }
+  }
+}
 
