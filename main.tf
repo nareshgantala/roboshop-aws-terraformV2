@@ -42,13 +42,13 @@ module "app_components" {
   vpc_security_group_ids = [module.sg.security_group_ids["${each.key}_sg"]]
 }
 
-module "dns_app" {
-  for_each = var.app
-  source = "./modules/dns"
-  component = each.key
-  record = aws_lb.internal_alb.dns_name
-  alb_zone_id = aws_lb.internal_alb.zone_id
-}
+# module "dns_app" {
+#   for_each = var.app
+#   source = "./modules/dns"
+#   component = each.key
+#   record = aws_lb.internal_alb.dns_name
+#   alb_zone_id = aws_lb.internal_alb.zone_id
+# }
 
 module "db_ec2" {
   for_each = var.db
@@ -57,10 +57,17 @@ module "db_ec2" {
   component = each.key
 }
 
-module "db_dns" {
-  for_each = var.db
-  source = "./modules/dns"
+module "dns" {
+  # Merge both maps so the loop runs for all components (user, cart, mysql, shipping, etc.)
+  for_each  = merge(var.app, var.db)
+  source    = "./modules/dns"
+  component = each.key
+
+  # Conditional Logic: If the component exists in var.app, use ALB records. Otherwise, use EC2 Private IP.
+  record = contains(keys(var.app), each.key) ? aws_lb.internal_alb.dns_name : module.db_ec2[each.key].private_ip
   
+  # For DB components that don't need a Route 53 Alias/Zone ID, pass null or an empty string
+  alb_zone_id = contains(keys(var.app), each.key) ? aws_lb.internal_alb.zone_id : null
 }
 
 
