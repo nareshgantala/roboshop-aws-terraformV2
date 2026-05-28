@@ -1,4 +1,5 @@
 resource "aws_security_group" "public_alb" {
+   name        = "roboshop-public-alb-sg"
   vpc_id = var.vpc_id
   ingress {
     from_port        = 80
@@ -21,6 +22,7 @@ resource "aws_security_group" "public_alb" {
 
 # 1. Clear out the inline ingress from the parent resource definition
 resource "aws_security_group" "frontend_sg" {
+  name = "roboshop-frontend-sg"
   vpc_id = var.vpc_id
 
   tags = {
@@ -71,6 +73,7 @@ resource "aws_security_group_rule" "frontend_egress_to_internal_alb" {
 
 
 resource "aws_security_group" "internal_alb" {
+  name = "roboshop-internal-alb-sg"
   vpc_id = var.vpc_id
 
   # REMOVED: Ingress rule pointing directly to frontend_sg moved below to break the loop
@@ -103,6 +106,7 @@ resource "aws_security_group_rule" "internal_alb_ingress_from_frontend" {
 # ====================================================================
 
 resource "aws_security_group" "cart_sg" {
+  name = "roboshop-cart-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id, aws_security_group.payment_sg.id]
@@ -124,6 +128,7 @@ resource "aws_security_group" "cart_sg" {
 }
 
 resource "aws_security_group" "catalogue_sg" {
+  name = "roboshop-catalogue-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id, aws_security_group.cart_sg.id]
@@ -145,6 +150,7 @@ resource "aws_security_group" "catalogue_sg" {
 }
 
 resource "aws_security_group" "user_sg" {
+  name = "roboshop-user-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id, aws_security_group.payment_sg.id]
@@ -166,6 +172,7 @@ resource "aws_security_group" "user_sg" {
 }
 
 resource "aws_security_group" "shipping_sg" {
+  name = "roboshop-shipping-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id, aws_security_group.orders_sg.id]
@@ -187,6 +194,7 @@ resource "aws_security_group" "shipping_sg" {
 }
 
 resource "aws_security_group" "payment_sg" {
+  name = "roboshop-payment-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id]
@@ -208,6 +216,7 @@ resource "aws_security_group" "payment_sg" {
 }
 
 resource "aws_security_group" "ratings_sg" {
+  name = "roboshop-ratings-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id]
@@ -229,6 +238,7 @@ resource "aws_security_group" "ratings_sg" {
 }
 
 resource "aws_security_group" "orders_sg" {
+  name = "roboshop-orders-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.internal_alb.id]
@@ -250,6 +260,7 @@ resource "aws_security_group" "orders_sg" {
 }
 
 resource "aws_security_group" "mysql_sg" {
+  name = "roboshop-mysql-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.catalogue_sg.id, aws_security_group.ratings_sg.id, aws_security_group.shipping_sg.id]
@@ -271,6 +282,7 @@ resource "aws_security_group" "mysql_sg" {
 }
 
 resource "aws_security_group" "rabbitmq_sg" {
+  name = "roboshop-rabbitmq-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.orders_sg.id, aws_security_group.payment_sg.id]
@@ -292,6 +304,7 @@ resource "aws_security_group" "rabbitmq_sg" {
 }
 
 resource "aws_security_group" "mongo_sg" {
+  name = "roboshop-mongo-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.orders_sg.id, aws_security_group.user_sg.id]
@@ -313,6 +326,7 @@ resource "aws_security_group" "mongo_sg" {
 }
 
 resource "aws_security_group" "valkey_sg" {
+  name = "roboshop-valkey-sg"
   vpc_id = var.vpc_id
   ingress {
     security_groups = [aws_security_group.cart_sg.id]
@@ -335,6 +349,7 @@ resource "aws_security_group" "valkey_sg" {
 
 
 resource "aws_security_group" "database_sg" {
+  name = "roboshop-database-sg"
   vpc_id = var.vpc_id
   ingress {
     from_port        = 0
